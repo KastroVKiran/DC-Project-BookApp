@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BookHaven - Book Store Management</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header>
+      <div class="logo-container">
+        <h1><i class="fas fa-book-open"></i> BookHaven</h1>
+      </div>
+      <div class="search-container">
+        <input type="text" id="search-input" placeholder="Search by title, author, or ISBN...">
+        <button id="search-button"><i class="fas fa-search"></i></button>
+      </div>
+      <nav>
+        <button id="add-book-btn" class="primary-btn"><i class="fas fa-plus"></i> Add Book</button>
+      </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <h3>Categories</h3>
+        <ul id="genre-list">
+          <li class="genre-item active" data-id="all">All Books</li>
+          <!-- Genres will be populated here -->
+        </ul>
+        <div class="sidebar-footer">
+          <button id="add-genre-btn"><i class="fas fa-plus"></i> Add Category</button>
+        </div>
+      </aside>
+
+      <!-- Book Content -->
+      <section class="content">
+        <div class="content-header">
+          <h2 id="current-view-title">All Books</h2>
+          <div class="view-options">
+            <button class="view-btn active" data-view="grid"><i class="fas fa-th-large"></i></button>
+            <button class="view-btn" data-view="list"><i class="fas fa-list"></i></button>
+          </div>
+        </div>
+
+        <!-- Books Grid -->
+        <div id="books-container" class="books-grid">
+          <!-- Books will be populated here -->
+          <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Loading books...</p>
+          </div>
+        </div>
+
+        <!-- Empty State -->
+        <div id="empty-state" class="empty-state hidden">
+          <i class="fas fa-books"></i>
+          <h3>No books found</h3>
+          <p>Add your first book to get started</p>
+          <button class="primary-btn" id="empty-add-book-btn"><i class="fas fa-plus"></i> Add Book</button>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      <p>&copy; 2025 BookHaven - Book Store Management Platform</p>
+    </footer>
+  </div>
+
+  <!-- Add/Edit Book Modal -->
+  <div id="book-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modal-title">Add New Book</h3>
+        <button class="close-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="book-form">
+          <input type="hidden" id="book-id">
+          
+          <div class="form-group">
+            <label for="book-title">Title *</label>
+            <input type="text" id="book-title" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="book-author">Author *</label>
+            <input type="text" id="book-author" required>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="book-price">Price *</label>
+              <input type="number" id="book-price" step="0.01" min="0" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="book-genre">Genre</label>
+              <select id="book-genre">
+                <option value="">Select Genre</option>
+                <!-- Genres will be populated here -->
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="book-isbn">ISBN</label>
+              <input type="text" id="book-isbn">
+            </div>
+            
+            <div class="form-group">
+              <label for="book-published-date">Published Date</label>
+              <input type="date" id="book-published-date">
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="book-cover">Cover Image URL</label>
+            <input type="url" id="book-cover" placeholder="https://example.com/book-cover.jpg">
+            <div class="cover-preview-container">
+              <img id="cover-preview" src="" alt="Cover preview" class="hidden">
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="book-stock">Stock</label>
+              <input type="number" id="book-stock" min="0" value="0">
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="book-description">Description</label>
+            <textarea id="book-description" rows="4"></textarea>
+          </div>
+          
+          <div class="form-actions">
+            <button type="button" class="secondary-btn" id="cancel-book-btn">Cancel</button>
+            <button type="submit" class="primary-btn" id="save-book-btn">Save Book</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Genre Modal -->
+  <div id="genre-modal" class="modal">
+    <div class="modal-content small-modal">
+      <div class="modal-header">
+        <h3 id="genre-modal-title">Add New Genre</h3>
+        <button class="close-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="genre-form">
+          <input type="hidden" id="genre-id">
+          
+          <div class="form-group">
+            <label for="genre-name">Genre Name *</label>
+            <input type="text" id="genre-name" required>
+          </div>
+          
+          <div class="form-actions">
+            <button type="button" class="secondary-btn" id="cancel-genre-btn">Cancel</button>
+            <button type="submit" class="primary-btn" id="save-genre-btn">Save Genre</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Book Details Modal -->
+  <div id="book-details-modal" class="modal">
+    <div class="modal-content large-modal">
+      <div class="modal-header">
+        <h3 id="details-title">Book Details</h3>
+        <button class="close-modal">&times;</button>
+      </div>
+      <div class="modal-body book-details-container">
+        <div class="book-details-content">
+          <div class="book-cover-container">
+            <img id="details-cover" src="" alt="Book cover">
+          </div>
+          <div class="book-info">
+            <h2 id="details-book-title"></h2>
+            <p class="author">by <span id="details-author"></span></p>
+            <div class="book-meta">
+              <p><strong>Genre:</strong> <span id="details-genre"></span></p>
+              <p><strong>ISBN:</strong> <span id="details-isbn"></span></p>
+              <p><strong>Published:</strong> <span id="details-published-date"></span></p>
+              <p><strong>Stock:</strong> <span id="details-stock"></span> available</p>
+            </div>
+            <div class="price-container">
+              <h3>$<span id="details-price"></span></h3>
+            </div>
+            <div class="details-description">
+              <h4>Description</h4>
+              <p id="details-description"></p>
+            </div>
+            <div class="details-actions">
+              <button id="edit-book-btn" class="secondary-btn"><i class="fas fa-edit"></i> Edit</button>
+              <button id="delete-book-btn" class="danger-btn"><i class="fas fa-trash"></i> Delete</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirmation Modal -->
+  <div id="confirm-modal" class="modal">
+    <div class="modal-content small-modal">
+      <div class="modal-header">
+        <h3 id="confirm-title">Confirm Action</h3>
+        <button class="close-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p id="confirm-message"></p>
+        <div class="form-actions">
+          <button class="secondary-btn" id="cancel-confirm-btn">Cancel</button>
+          <button class="danger-btn" id="confirm-action-btn">Confirm</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notifications -->
+  <div id="toast-container"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "9999:9999"
+    depends_on:
+      - mysql
+    environment:
+      - PORT=9999
+      - DB_HOST=mysql
+      - DB_USER=bookstore_user
+      - DB_PASSWORD=bookstore_password
+      - DB_NAME=bookstore_db
+    volumes:
+      - ./src:/app/src
+      - ./public:/app/public
+    restart: unless-stopped
+    networks:
+      - bookstore-network
+
+  mysql:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_DATABASE=bookstore_db
+      - MYSQL_USER=bookstore_user
+      - MYSQL_PASSWORD=bookstore_password
+      - MYSQL_ROOT_PASSWORD=root_password
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: unless-stopped
+    networks:
+      - bookstore-network
+
+networks:
+  bookstore-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
