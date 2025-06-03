@@ -91,7 +91,7 @@ docker-compose down -v
 To connect to the MySQL database from the command line:
 
 ```bash
-docker exec -it bookstore-management_mysql_1 mysql -ubookstore_user -pbookstore_password bookstore_db
+docker exec -it dc-project-bookapp_mysql_1 mysql -ubookstore_user -pbookstore_password bookstore_db
 ```
 
 ### Useful MySQL Commands
